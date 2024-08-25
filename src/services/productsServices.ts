@@ -1,11 +1,12 @@
-import { CreationAttributes } from 'sequelize'
+import { CreationAttributes, Op } from 'sequelize'
 import { Product } from '../models/product.model'
 import { ProductEntry, NewProductEntry } from '../types/types'
 import { ProductCategory } from '../models/productCategory.model'
 import { Category } from '../models/category.model'
 
-export const getAllProducts = async (): Promise<Product[]> => {
+export const getAllProducts = async (query: any): Promise<ProductEntry[]> => {
   try {
+    console.log(query)
     const products = await Product.findAll()
     return products
   } catch (error) {
@@ -14,6 +15,44 @@ export const getAllProducts = async (): Promise<Product[]> => {
   }
 }
 
+export const getAllProductsFilters = async (query: any): Promise<Product[]> => {
+  const { categorie, sort } = query
+  console.log(categorie)
+  console.log(sort)
+  try {
+    let query = {}
+    if (categorie !== undefined) {
+      const categoriesArray: string[] = Array.isArray(categorie) ? categorie : categorie.split(',')
+      // ?categoriesArray === ['funkos'] transforma 'funkos' en ['funkos']
+
+      //* categories se utiliza para acceder a las propiedades del modelo Category cuando estás realizando una consulta desde la perspectiva del modelo Product.
+      //* Ejemplo: '$categories.categoryName$' para acceder a categoryName en el modelo Category.
+      query = {
+        '$categories.categoryName$': { // ?$categories.categoryName$' para acceder a categoryName en el modelo Category
+          [Op.in]: categoriesArray // ?Op.in se utiliza para comprobar si un valor está en una lista de valores
+        }
+      }
+    }
+
+    // Ejecutar la consulta con filtros y ordenación
+    const products = await Product.findAll({
+      where: query,
+      include: [
+        {
+          model: Category,
+          through: { attributes: [] }, // Excluye los atributos de la tabla intermedia productCategory
+          attributes: ['categoryName'] // Incluye solo los atributos necesarios de Category
+        }
+      ], //* order recibe un array de array donde el primer elemento del sub array es la columna a order en este caso 'price' y el segundo la forma en que se ordena
+      order: sort === 'price_asc' ? [['price', 'ASC']] : [['price', 'DESC']]
+    })
+
+    return products
+  } catch (error) {
+    console.error('Error fetching products:', error)
+    throw new Error('Error fetching products')
+  }
+}
 export const getOneProduct = async (id: number): Promise<ProductEntry | any> => {
   try {
     const resultProduct = await Product.findByPk(id, {
@@ -87,7 +126,6 @@ export const updateProduct = async (id: number, updateProductEntry: Partial<NewP
         )
       )
     }
-
     return productToUpdate
   } catch (error) {
     const errorMessage = error as Error

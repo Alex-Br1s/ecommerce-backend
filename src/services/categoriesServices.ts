@@ -12,12 +12,24 @@ export const getAllCategories = async (): Promise<CategoryEntry[]> => {
   }
 }
 
-export const addCategory = async (newCategoryEntry: NewCategoryEntry): Promise<CategoryEntry> => {
+export const addCategory = async (categoryEntry: NewCategoryEntry): Promise<CategoryEntry> => {
   try {
-    const newCategory = await Category.create(newCategoryEntry as CreationAttributes<Category>)
+    const newCategory = await Category.create(categoryEntry as CreationAttributes<Category>)
     return newCategory
   } catch (error) {
     const errorMessage = error as Error
     throw new Error(`Error al crear una categoria ${errorMessage.message}`)
+  }
+}
+
+export const updateCategory = async (id: number, categoryEntry: Partial<NewCategoryEntry>): Promise<CategoryEntry | undefined> => {
+  try {
+    const category = await Category.findByPk(id)
+    if (category === null) throw new Error('No se encontro la categoria')
+    await category?.update(categoryEntry)
+    return category
+  } catch (error) {
+    const errorMessage = error as Error
+    throw new Error(`Error al actualizar la categoria ${errorMessage.message}`)
   }
 }

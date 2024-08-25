@@ -1,4 +1,4 @@
-import { NewProductEntry, ProductEntry } from '../types/types'
+import { NewProductEntry } from '../types/types'
 
 // ? sintaxis difetentes 1
 const isString = (value: any): boolean => {
@@ -28,6 +28,8 @@ const parseStock = (stockFromRequest: any): number => {
 }
 
 const parseDescription = (descriptionFromRequest: any): string | undefined => {
+  if (typeof descriptionFromRequest === 'string') return descriptionFromRequest
+
   if (descriptionFromRequest !== undefined && !isString(descriptionFromRequest)) {
     throw new Error('La descripción debe ser de tipo texto')
   }
@@ -63,7 +65,7 @@ export const toNewProductEntry = (dateProduct: any): NewProductEntry => {
   return newEntry
 }
 
-export const toUpdateProductEntry = (dateProduct: any): Partial<ProductEntry> => {
+export const toUpdateProductEntry = (dateProduct: any): Partial<NewProductEntry> => {
   const updatedEntry: Partial<NewProductEntry> = {}
   if (dateProduct.name !== undefined) {
     updatedEntry.name = parseName(dateProduct.name)

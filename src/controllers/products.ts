@@ -1,21 +1,30 @@
 
 import { Request, Response } from 'express'
-import { getAllProducts, getOneProduct, addNewProduct, deleteOneProduct, updateProduct } from '../services/productsServices'
+import { getAllProducts, getOneProduct, addNewProduct, deleteOneProduct, updateProduct, getAllProductsFilters } from '../services/productsServices'
 import { toNewProductEntry, toUpdateProductEntry } from '../utils/req-body-product'
 
-export const handleGetAllProducts = async (_req: Request, res: Response): Promise<void> => {
+export const handleGetAllProducts = async (req: Request, res: Response): Promise<void> => {
   try {
-    const products = await getAllProducts()
+    const products = await getAllProducts(req.query)
     res.status(200).json(products)
   } catch (error) {
     res.status(500).json({ error: (error as Error).message })//* Maneja errores de manera adecuada
   }
 }
 
+export const handleGetAllProductsFilters = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const productsCategories = await getAllProductsFilters(req.query)
+    res.status(200).json(productsCategories)
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message })
+  }
+}
+
 export const handleGetOneProduct = async (req: Request, res: Response): Promise<void> => {
   try {
-    const resultOneProduct = await getOneProduct(+req.params.id)
-    res.status(200).send(resultOneProduct)
+    const oneProduct = await getOneProduct(+req.params.id)
+    res.status(200).send(oneProduct)
   } catch (error) {
     res.status(500).json({ error: (error as Error).message })
   }
@@ -37,7 +46,6 @@ export const handleUpdateProduct = async (req: Request, res: Response): Promise<
   try {
     const { id } = req.params
     const updatedProduct = toUpdateProductEntry(req.body)
-    console.log(updatedProduct)
     const resultUpdatedProduct = await updateProduct(+id, updatedProduct)
     res.status(201).json(resultUpdatedProduct)
   } catch (error) {

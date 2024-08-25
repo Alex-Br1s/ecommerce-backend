@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { handleGetAllProducts, handleGetOneProduct, handleAddProduct, handleDeleteOneProduct, handleUpdateProduct } from '../controllers/products'
-import { handleAddCategory, handleGetAllCategories } from '../controllers/categories'
+import { handleGetAllProducts, handleGetOneProduct, handleAddProduct, handleDeleteOneProduct, handleUpdateProduct, handleGetAllProductsFilters } from '../controllers/products'
+import { handleAddCategory, handleGetAllCategories, handleUpdateCategory } from '../controllers/categories'
 
 const router = Router()
 
@@ -13,10 +13,9 @@ router.get('/products', (req, res, next) => {
   handleGetAllProducts(req, res).catch(next)
 })
 
-/* router.get('/productsCategories', (req, res, next) => {
-  handleGetAllProductsWithCategories(req, res).catch(next)
+router.get('/products/filtered', (req, res, next) => {
+  handleGetAllProductsFilters(req, res).catch(next)
 })
- */
 
 //* Hacer el filtrado de todos los productos por categoria
 router.get('/product/:id', (req, res, next) => {
@@ -37,9 +36,6 @@ router.delete('/product/:id', (req, res, next) => {
 //* ------------------------------------------------
 
 // ? Logica de productos con categorias
-/* router.get('/productsCategories', (req, res, next) => {
-  handleGetAllProductsWithCategories(req, res).catch(next)
-}) */
 
 //* ------------------------------------------------
 
@@ -49,6 +45,10 @@ router.get('/categories', (req, res, next) => {
 
 router.post('/category', (req, res, next) => {
   handleAddCategory(req, res).catch(next)
+})
+
+router.put('/category/:id', (req, res, next) => {
+  handleUpdateCategory(req, res).catch(next)
 })
 
 export default router
