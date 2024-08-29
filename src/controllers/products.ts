@@ -32,8 +32,8 @@ export const handleGetOneProduct = async (req: Request, res: Response): Promise<
 
 export const handleAddProduct = async (req: Request, res: Response): Promise<void> => {
   try {
-    const newProduct = toNewProductEntry(req.body)
-    const resultNewproduct = await addNewProduct(newProduct)
+    const dataValidated = toNewProductEntry(req.body)
+    const resultNewproduct = await addNewProduct(dataValidated)
     res.status(201).json(resultNewproduct)
   } catch (error) {
     //* Aserción de tipo para tratar a error como un objeto Error
@@ -45,8 +45,8 @@ export const handleAddProduct = async (req: Request, res: Response): Promise<voi
 export const handleUpdateProduct = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params
-    const updatedProduct = toUpdateProductEntry(req.body)
-    const resultUpdatedProduct = await updateProduct(+id, updatedProduct)
+    const dataValidated = toUpdateProductEntry(req.body)
+    const resultUpdatedProduct = await updateProduct(+id, dataValidated)
     res.status(201).json(resultUpdatedProduct)
   } catch (error) {
     const errorMessage = error as Error
@@ -57,7 +57,7 @@ export const handleUpdateProduct = async (req: Request, res: Response): Promise<
 export const handleDeleteOneProduct = async (req: Request, res: Response): Promise<void> => {
   try {
     const resultDeleteProduct = await deleteOneProduct(+req.params.id)
-    res.status(202).send((resultDeleteProduct !== 0) ? 'Producto eliminado' : 'Ocurrio algo inesperado')
+    res.status(202).send((resultDeleteProduct !== 0) ? 'Producto eliminado' : 'Ocurrio un error al intentar eliminar el producto')
   } catch (error) {
     res.status(500).json({ error: (error as Error).message })
   }

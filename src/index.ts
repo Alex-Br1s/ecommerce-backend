@@ -2,7 +2,9 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import connectionDB from './connection/connection'
-import router from './routes/router'
+import productRouter from './routes/products'
+import categoryRouter from './routes/categories'
+import userRouter from './routes/user'
 
 dotenv.config()
 const PORT = process.env.PORT ?? 3001
@@ -17,7 +19,9 @@ app.use(express.json())
 void connectionDB()
 
 //* rutas
-app.use('/api', router)
+app.use('/api', productRouter)
+app.use('/api', categoryRouter)
+app.use('/api', userRouter)
 
 app.listen(PORT, () => {
   console.log(`server listening on port ${PORT}`)

@@ -10,18 +10,15 @@ export const getAllProducts = async (query: any): Promise<ProductEntry[]> => {
     const products = await Product.findAll()
     return products
   } catch (error) {
-    const errorMessage = error as Error
-    throw new Error(`Error al obtener los productos de la base de datos ${errorMessage.message}`)
+    throw new Error(`Error al obtener los productos ${(error as Error).message}`)
   }
 }
 
 export const getAllProductsFilters = async (query: any): Promise<Product[]> => {
   const { categorie, sort } = query
-  console.log(categorie)
-  console.log(sort)
   try {
     let query = {}
-    if (categorie !== undefined) {
+    if (categorie) {
       const categoriesArray: string[] = Array.isArray(categorie) ? categorie : categorie.split(',')
       // ?categoriesArray === ['funkos'] transforma 'funkos' en ['funkos']
 
@@ -37,20 +34,17 @@ export const getAllProductsFilters = async (query: any): Promise<Product[]> => {
     // Ejecutar la consulta con filtros y ordenación
     const products = await Product.findAll({
       where: query,
-      include: [
-        {
-          model: Category,
-          through: { attributes: [] }, // Excluye los atributos de la tabla intermedia productCategory
-          attributes: ['categoryName'] // Incluye solo los atributos necesarios de Category
-        }
-      ], //* order recibe un array de array donde el primer elemento del sub array es la columna a order en este caso 'price' y el segundo la forma en que se ordena
+      include: [{
+        model: Category,
+        through: { attributes: [] }, // Excluye los atributos de la tabla intermedia productCategory
+        attributes: ['categoryName'] // Incluye solo los atributos necesarios de Category
+      }], //* order recibe un array de array donde el primer elemento del sub array es la columna a order en este caso 'price' y el segundo la forma en que se ordena
       order: sort === 'price_asc' ? [['price', 'ASC']] : [['price', 'DESC']]
     })
 
     return products
   } catch (error) {
-    console.error('Error fetching products:', error)
-    throw new Error('Error fetching products')
+    throw new Error(`Error al obtener los productos filtrados y/o ordenados ${(error as Error).message}`)
   }
 }
 export const getOneProduct = async (id: number): Promise<ProductEntry | any> => {
@@ -66,8 +60,7 @@ export const getOneProduct = async (id: number): Promise<ProductEntry | any> => 
     if (resultProduct == null) throw new Error('El producto no existe')
     return resultProduct
   } catch (error) {
-    const errorMessage = error as Error
-    throw new Error(errorMessage.message)
+    throw new Error(`Error al obtener el usuario por id ${(error as Error).message}`)
   }
 }
 
@@ -75,12 +68,15 @@ export const addNewProduct = async (newProductEntry: NewProductEntry): Promise<P
   try {
     const { categoryId, ...productData } = newProductEntry
     // ? categoryId === [2] o mas ids de categorias [2, 4]
+
     const newProduct = await Product.create(productData as CreationAttributes<Product>)
+
     if (categoryId !== undefined && Array.isArray(categoryId)) {
       const productCategories = categoryId.map((id) => ({
         productId: newProduct.id,
         categoryId: id
       }))
+
       // ? productCategories === [ { productId: 36, categoryId: 2 }, { productId: 36, categoryId: 4 } ]
       await Promise.all(
         productCategories.map(async (productCategory) => // ? asi quedaria luego del map { productId: 36, categoryId: 2 } y esto se crea en la db mediante el create
@@ -88,10 +84,10 @@ export const addNewProduct = async (newProductEntry: NewProductEntry): Promise<P
         )
       )
     }
+
     return newProduct
   } catch (error) {
-    const errorMessage = error as Error
-    throw new Error(errorMessage.message)
+    throw new Error(`Error al crear un nuevo producto ${(error as Error).message}`)
   }
 }
 
@@ -128,8 +124,7 @@ export const updateProduct = async (id: number, updateProductEntry: Partial<NewP
     }
     return productToUpdate
   } catch (error) {
-    const errorMessage = error as Error
-    throw new Error(errorMessage.message)
+    throw new Error((error as Error).message)
   }
 }
 
@@ -139,7 +134,6 @@ export const deleteOneProduct = async (id: number): Promise<number> => {
     // ? destroy devuelve 1 === eliminado & 0 === no eliminado x x motivo
     return resultProduct
   } catch (error) {
-    const errorMessage = error as Error
-    throw new Error(errorMessage.message)
+    throw new Error(`Error al eliminar un producto ${(error as Error).message}`)
   }
 }

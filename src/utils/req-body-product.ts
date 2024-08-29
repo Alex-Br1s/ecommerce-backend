@@ -45,7 +45,7 @@ const parseImage = (imageFromRequest: any): string => {
 
 const parseCategoryId = (categoryIdFromRequest: any): number[] => {
   if (!Array.isArray(categoryIdFromRequest)) {
-    throw new Error('categoryIds debe ser un array de números')
+    throw new Error('categoryIds es requerido y debe ser un array de números')
   }
   categoryIdFromRequest.forEach((categoryId) => {
     if (!isNumber(categoryId)) throw new Error('Cada id debe ser un número')
