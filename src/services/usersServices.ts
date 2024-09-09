@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import { CreationAttributes } from 'sequelize'
 import { User } from '../models/user.model'
-import { LoginEntry, NewUserEntry, UserEntry } from '../types/types'
+import { ChangePasswordEntry, LoginEntry, NewUserEntry, updateUserEntry, UserEntry } from '../types/types'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 dotenv.config()
@@ -20,9 +20,9 @@ export const registerUser = async (dateUser: NewUserEntry): Promise<Omit<UserEnt
     const newUser = {
       firstName: dateUser.firstName,
       lastName: dateUser.lastName,
+      profilePicture: dateUser.profilePicture,
       email: dateUser.email,
-      password: hashedPassword,
-      role: dateUser.role
+      password: hashedPassword
     }
     const newUserResult = await User.create(newUser as CreationAttributes<User>)
 
@@ -35,7 +35,7 @@ export const registerUser = async (dateUser: NewUserEntry): Promise<Omit<UserEnt
   }
 }
 
-export const loginUser = async (dataLogin: LoginEntry): Promise<any> => {
+export const loginUser = async (dataLogin: LoginEntry): Promise<{ user: Omit<UserEntry, 'password'>, token: string }> => {
   try {
     const user = await User.findOne({ where: { email: dataLogin.email } })
     if (!user) throw new Error('Correo o contraseña incorrecto')
@@ -44,7 +44,7 @@ export const loginUser = async (dataLogin: LoginEntry): Promise<any> => {
     if (!passwordMatch) throw new Error('Correo o contraseña incorrecto')
 
     const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, secretKey, {
-      expiresIn: '1h'
+      expiresIn: '1d'
     })
 
     const { password: _, ...userWithoutPassword } = user.get({ plain: true })
@@ -52,5 +52,85 @@ export const loginUser = async (dataLogin: LoginEntry): Promise<any> => {
     return { user: userWithoutPassword, token }
   } catch (error) {
     throw new Error(`Error al querer iniciar sesión ${(error as Error).message}`)
+  }
+}
+
+export const getAllUsers = async (): Promise<UserEntry[]> => {
+  try {
+    const allUsers = await User.findAll({ attributes: { exclude: ['password'] } })
+    return allUsers
+  } catch (error) {
+    throw new Error(`Error al obtener todos los usuarios ${(error as Error).message}`)
+  }
+}
+
+export const getOneUser = async (userId: number): Promise<UserEntry | null> => {
+  try {
+    const user = await User.findByPk(userId, { attributes: { exclude: ['password'] } })
+    return user
+  } catch (error) {
+    throw new Error(`Error al obtener un usuario ${(error as Error).message}`)
+  }
+}
+
+export const changePassword = async (userId: number, newData: ChangePasswordEntry): Promise<{ user: Omit<UserEntry, 'password'> }> => {
+  try {
+    const user = await User.findByPk(userId)
+    if (!user) throw new Error('Usuario no encontrado')
+
+    const { email, password } = user.get({ plain: true })
+    if (email !== newData.email) throw new Error('El correo electronico no coincide')
+
+    console.log(`constraseña actual: ${newData.password}`)
+    console.log(`constraseña actual: ${newData.newPassword}`)
+
+    const passwordMatch = await bcrypt.compare(newData.password, password)
+
+    if (!passwordMatch) throw new Error('La contraseña actual no coincide')
+
+    if (newData.password === newData.newPassword) throw new Error('La nueva contraseña no puede ser la misma que la actual')
+
+    const hashedPassword = await bcrypt.hash(newData.newPassword, 10)
+
+    await user.update({ password: hashedPassword })
+
+    const { password: _, ...userWithoutPassword } = user.get({ plain: true })
+
+    return { user: userWithoutPassword }
+  } catch (error) {
+    throw new Error(`Error al cambiar la contraseña: ${(error as Error).message}`)
+  }
+}
+
+export const updateUser = async (userId: number, dataUser: Partial<updateUserEntry>): Promise<Partial<updateUserEntry>> => {
+  try {
+    const user = await User.findByPk(userId, { attributes: { exclude: ['password'] } })
+    if (!user) throw new Error('No se encontro el usuario a editar')
+    await user.update(dataUser)
+    return user
+  } catch (error) {
+    throw new Error(`Error al actualizar un usuario: ${(error as Error).message}`)
+  }
+}
+
+export const desactiveUser = async (userId: number): Promise<UserEntry> => {
+  try {
+    const user = await User.findByPk(userId, { attributes: { exclude: ['password'] } })
+    if (!user) throw new Error('No se encontro el usuario a eliminar')
+    await user.update({ isActive: false })
+    return user
+  } catch (error) {
+    throw new Error(`Error al querer eliminar el usuario: ${(error as Error).message}`)
+  }
+}
+
+export const activeUser = async (userId: number): Promise<UserEntry> => {
+  try {
+    const user = await User.findByPk(userId, { attributes: { exclude: ['password'] } })
+    if (!user) throw new Error('No se encontro el usuario a activar')
+    await user.update({ isActive: true })
+    return user
+  } catch (error) {
+    throw new Error(`Error al querer activar el usuario: ${(error as Error).message}`)
   }
 }

@@ -1,4 +1,4 @@
-import { LoginEntry, NewUserEntry } from '../types/types'
+import { ChangePasswordEntry, LoginEntry, NewUserEntry, updateUserEntry } from '../types/types'
 
 const isString = (value: any): boolean => {
   return typeof value === 'string' && value.length > 0
@@ -14,6 +14,11 @@ const parseLastName = (lastNameFromRequest: any): string => {
   return lastNameFromRequest
 }
 
+const parseProfilePicture = (profilePictureFromRequest: any): string => {
+  if (!isString(profilePictureFromRequest)) throw new Error('La imagen es una url requerida')
+  return profilePictureFromRequest
+}
+
 const parseEmail = (emailFromRequest: any): string => {
   if (!isString(emailFromRequest) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailFromRequest)) {
     throw new Error('Por favor ingrese un email valido')
@@ -22,34 +27,50 @@ const parseEmail = (emailFromRequest: any): string => {
 }
 
 const parsePassword = (passwordFromRequest: any): string => {
-  if (!isString(passwordFromRequest) && passwordFromRequest.test(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)) {
+  if (!isString(passwordFromRequest) || !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(passwordFromRequest)) {
     throw new Error('Asegurese que su contraseña tenga al menos 8 caracteres, incluya al menos una letra mayúscula, una letra minúscula, un número y un carácter especial')
   }
   return passwordFromRequest
 }
 
-const parseRole = (passwordFromRequest: any): string => {
-  if (!isString(passwordFromRequest)) {
-    throw new Error('Asegurese de que el role sea de tipo texto el role no va xd')
-  }
-  return passwordFromRequest
-}
-
-export const toNewUserEntry = (dateUser: any): NewUserEntry => {
+export const toNewUserEntry = (dataUser: any): NewUserEntry => {
   const validateData: NewUserEntry = {
-    firstName: parseName(dateUser.firstName),
-    lastName: parseLastName(dateUser.lastName),
-    email: parseEmail(dateUser.email),
-    password: parsePassword(dateUser.password),
-    role: parseRole(dateUser.role)
+    firstName: parseName(dataUser.firstName).toLowerCase(),
+    lastName: parseLastName(dataUser.lastName).toLowerCase(),
+    profilePicture: parseProfilePicture(dataUser.profilePicture),
+    email: parseEmail(dataUser.email),
+    password: parsePassword(dataUser.password)
   }
   return validateData
 }
 
-export const validateLoginData = (dateUser: any): LoginEntry => {
+export const toUpdateUserEntry = (dataUser: any): Partial<updateUserEntry> => {
+  const validateData: Partial<updateUserEntry> = {}
+  if (dataUser.firstName !== undefined) {
+    validateData.firstName = parseName(dataUser.firstName)
+  }
+  if (dataUser.lastName !== undefined) {
+    validateData.lastName = parseLastName(dataUser.lastName)
+  }
+  if (dataUser.profilePicture !== undefined) {
+    validateData.profilePicture = parseProfilePicture(dataUser.profilePicture)
+  }
+  return validateData
+}
+
+export const validateLoginData = (dataUser: any): LoginEntry => {
   const validateData: LoginEntry = {
-    email: parseEmail(dateUser.email),
-    password: parsePassword(dateUser.password)
+    email: parseEmail(dataUser.email),
+    password: parsePassword(dataUser.password)
+  }
+  return validateData
+}
+
+export const validateChangePassword = (dataUser: any): ChangePasswordEntry => {
+  const validateData: ChangePasswordEntry = {
+    email: parseEmail(dataUser.email),
+    password: parsePassword(dataUser.password),
+    newPassword: parsePassword(dataUser.newPassword)
   }
   return validateData
 }

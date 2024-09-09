@@ -4,9 +4,8 @@ import { ProductEntry, NewProductEntry } from '../types/types'
 import { ProductCategory } from '../models/productCategory.model'
 import { Category } from '../models/category.model'
 
-export const getAllProducts = async (query: any): Promise<ProductEntry[]> => {
+export const getAllProducts = async (): Promise<ProductEntry[]> => {
   try {
-    console.log(query)
     const products = await Product.findAll()
     return products
   } catch (error) {
@@ -91,13 +90,11 @@ export const addNewProduct = async (newProductEntry: NewProductEntry): Promise<P
   }
 }
 
-export const updateProduct = async (id: number, updateProductEntry: Partial<NewProductEntry>): Promise<ProductEntry | null> => {
+export const updateProduct = async (id: number, updateProductEntry: Partial<NewProductEntry>): Promise<ProductEntry> => {
   try {
     //* Buscar el producto a actualizar
     const productToUpdate = await Product.findByPk(id)
-    if (productToUpdate == null) {
-      throw new Error('Producto no encontrado')
-    }
+    if (!productToUpdate) throw new Error('Producto no encontrado')
 
     //* Actualizar los datos del producto
     await productToUpdate.update(updateProductEntry)

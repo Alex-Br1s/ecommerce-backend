@@ -41,10 +41,10 @@ export class Product extends Model<Product> {
     description?: string
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.ARRAY(DataType.STRING),
     allowNull: false
   })
-    image!: string
+    images!: string[]
 
   @BelongsToMany(() => Category, () => ProductCategory)
     categories!: Category[]

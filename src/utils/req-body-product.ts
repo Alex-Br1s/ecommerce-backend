@@ -36,10 +36,14 @@ const parseDescription = (descriptionFromRequest: any): string | undefined => {
   return descriptionFromRequest
 }
 
-const parseImage = (imageFromRequest: any): string => {
-  if (!isString(imageFromRequest)) {
-    throw new Error('La url de la imagen debe ser de tipo texto requerido')
+const parseImage = (imageFromRequest: any): string[] => {
+  if (!Array.isArray(imageFromRequest)) {
+    throw new Error('Las imagenes son requeridas y deben ser un array de imagenes')
   }
+  imageFromRequest.forEach((image) => {
+    if (!isString(image)) throw new Error('Las imagenes deben ser de tipo texto')
+  })
+
   return imageFromRequest
 }
 
@@ -53,37 +57,37 @@ const parseCategoryId = (categoryIdFromRequest: any): number[] => {
   return categoryIdFromRequest
 }
 
-export const toNewProductEntry = (dateProduct: any): NewProductEntry => {
+export const toNewProductEntry = (dataProduct: any): NewProductEntry => {
   const newEntry: NewProductEntry = {
-    name: parseName(dateProduct.name),
-    price: parsePrice(dateProduct.price),
-    stock: parseStock(dateProduct.stock),
-    description: parseDescription(dateProduct.description),
-    image: parseImage(dateProduct.image),
-    categoryId: parseCategoryId(dateProduct.categoryId)
+    name: parseName(dataProduct.name).toLowerCase(),
+    price: parsePrice(dataProduct.price),
+    stock: parseStock(dataProduct.stock),
+    description: parseDescription(dataProduct.description)?.toLowerCase(),
+    images: parseImage(dataProduct.images),
+    categoryId: parseCategoryId(dataProduct.categoryId)
   }
   return newEntry
 }
 
-export const toUpdateProductEntry = (dateProduct: any): Partial<NewProductEntry> => {
+export const toUpdateProductEntry = (dataProduct: any): Partial<NewProductEntry> => {
   const updatedEntry: Partial<NewProductEntry> = {}
-  if (dateProduct.name !== undefined) {
-    updatedEntry.name = parseName(dateProduct.name)
+  if (dataProduct.name !== undefined) {
+    updatedEntry.name = parseName(dataProduct.name).toLowerCase()
   }
-  if (dateProduct.price !== undefined) {
-    updatedEntry.price = parsePrice(dateProduct.price)
+  if (dataProduct.price !== undefined) {
+    updatedEntry.price = parsePrice(dataProduct.price)
   }
-  if (dateProduct.stock !== undefined) {
-    updatedEntry.stock = parseStock(dateProduct.stock)
+  if (dataProduct.stock !== undefined) {
+    updatedEntry.stock = parseStock(dataProduct.stock)
   }
-  if (dateProduct.description !== undefined) {
-    updatedEntry.description = parseDescription(dateProduct.description)
+  if (dataProduct.description !== undefined) {
+    updatedEntry.description = parseDescription(dataProduct.description)?.toLowerCase()
   }
-  if (dateProduct.image !== undefined) {
-    updatedEntry.image = parseImage(dateProduct.image)
+  if (dataProduct.images !== undefined) {
+    updatedEntry.images = parseImage(dataProduct.images)
   }
-  if (dateProduct.categoryId !== undefined) {
-    updatedEntry.categoryId = parseCategoryId(dateProduct.categoryId)
+  if (dataProduct.categoryId !== undefined) {
+    updatedEntry.categoryId = parseCategoryId(dataProduct.categoryId)
   }
   return updatedEntry
 }

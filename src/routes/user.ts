@@ -1,18 +1,14 @@
 import { Router } from 'express'
-import { handleLoginUser, handleRegisterUser } from '../controllers/users'
+import { handleActiveUser, handleChangePassword, handleDesactiveUser, handleGetAllUsers, handleGetOneUser, handleLoginUser, handleRegisterUser, handleUpdateUser } from '../controllers/users'
 
 const router = Router()
 
-router.post('/register', (req, res, next) => {
+router.post('/user/register', (req, res, next) => {
   handleRegisterUser(req, res).catch(next)
 })
 
-router.post('/login', (req, res, next) => {
+router.post('/user/login', (req, res, next) => {
   handleLoginUser(req, res).catch(next)
-})
-
-/* router.post('/logout', (req, res, next) => {
-  handleLogoutUser(req, res).catch(next)
 })
 
 router.put('/user/:id/password', (req, res, next) => {
@@ -27,16 +23,20 @@ router.get('/user/:id', (req, res, next) => {
   handleGetOneUser(req, res).catch(next)
 })
 
-router.post('/user', (req, res, next) => {
-  handleCreateUser(req, res).catch(next)
-})
-
 router.put('/user/:id', (req, res, next) => {
   handleUpdateUser(req, res).catch(next)
 })
 
-router.delete('/user/:id', (req, res, next) => {
-  handleDeleteUser(req, res).catch(next)
+router.delete('/user/desactive/:id', (req, res, next) => {
+  handleDesactiveUser(req, res).catch(next)
 })
- */
+
+router.patch('/user/active/:id', (req, res, next) => {
+  handleActiveUser(req, res).catch(next)
+})
+
+/* router.post('/user', (req, res, next) => {
+  handleCreateUser(req, res).catch(next)
+  })
+*/
 export default router

@@ -20,8 +20,8 @@ const parseDescription = (descriptionFromRequest: any): string | undefined => {
 
 export const toNewCategoryEntry = (dateCategory: any): NewCategoryEntry => {
   const newEntry: NewCategoryEntry = {
-    categoryName: parseName(dateCategory.categoryName),
-    description: parseDescription(dateCategory.description)
+    categoryName: parseName(dateCategory.categoryName).toLowerCase(),
+    description: parseDescription(dateCategory.description)?.toLowerCase()
   }
   return newEntry
 }
@@ -29,10 +29,10 @@ export const toNewCategoryEntry = (dateCategory: any): NewCategoryEntry => {
 export const toUpdateCategoryEntry = (dateCategory: any): Partial<NewCategoryEntry> => {
   const updatedEntry: Partial<NewCategoryEntry> = {}
   if (dateCategory.categoryName !== undefined) {
-    updatedEntry.categoryName = parseName(dateCategory.categoryName)
+    updatedEntry.categoryName = parseName(dateCategory.categoryName).toLocaleLowerCase()
   }
   if (dateCategory.description !== undefined) {
-    updatedEntry.description = parseDescription(dateCategory.description)
+    updatedEntry.description = parseDescription(dateCategory.description)?.toLocaleLowerCase()
   }
   return updatedEntry
 }

@@ -28,6 +28,12 @@ export class User extends Model<User> {
 
   @Column({
     type: DataType.STRING,
+    allowNull: false
+  })
+    profilePicture!: string
+
+  @Column({
+    type: DataType.STRING,
     allowNull: false,
     unique: true
   })
@@ -45,6 +51,13 @@ export class User extends Model<User> {
     defaultValue: 'customer'
   })
     role!: string
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+    defaultValue: true
+  })
+    isActive!: boolean
 
   @HasMany(() => Favorite)
     favorites!: Favorite[]
