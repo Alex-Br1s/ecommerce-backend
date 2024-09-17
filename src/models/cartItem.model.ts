@@ -1,4 +1,4 @@
-import { Table, Model, Column, DataType, PrimaryKey, AutoIncrement, ForeignKey } from 'sequelize-typescript'
+import { Table, Model, Column, DataType, PrimaryKey, AutoIncrement, ForeignKey, BelongsTo } from 'sequelize-typescript'
 import { Cart } from './cart.model'
 import { Product } from './product.model'
 
@@ -43,4 +43,8 @@ export class CartItem extends Model<CartItem> {
     }
   })
     price!: number
+
+  // Relación explícita con el modelo Product
+  @BelongsTo(() => Product)
+    product!: Product // <-- Declara explícitamente la propiedad product aquí
 }

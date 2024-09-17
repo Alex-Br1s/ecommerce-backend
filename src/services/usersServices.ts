@@ -57,7 +57,7 @@ export const loginUser = async (dataLogin: LoginEntry): Promise<{ user: Omit<Use
 
 export const getAllUsers = async (): Promise<UserEntry[]> => {
   try {
-    const allUsers = await User.findAll({ attributes: { exclude: ['password'] } })
+    const allUsers = await User.findAll({ where: { isActive: true }, attributes: { exclude: ['password'] } })
     return allUsers
   } catch (error) {
     throw new Error(`Error al obtener todos los usuarios ${(error as Error).message}`)

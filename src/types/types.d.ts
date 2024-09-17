@@ -40,3 +40,12 @@ export interface LoginEntry {
 }
 
 export type ChangePasswordEntry = LoginEntry & { newPassword: string }
+
+export interface ResponseAddCart {
+  cartId: number
+  items: Array<{
+    productId: number
+    quantity: number
+    price: number
+  }>
+}

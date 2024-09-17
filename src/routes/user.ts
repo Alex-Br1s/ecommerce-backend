@@ -35,8 +35,12 @@ router.patch('/user/active/:id', (req, res, next) => {
   handleActiveUser(req, res).catch(next)
 })
 
-/* router.post('/user', (req, res, next) => {
-  handleCreateUser(req, res).catch(next)
-  })
-*/
+/* router.get('/user/:id/orders', (req, res, next) => {
+  handleAllOrders(req, res).catch(next)
+})
+
+router.post('/user/:id/order', (req, res, next) => {
+  handleCreateOrder(req, res).catch(next)
+})
+ */
 export default router

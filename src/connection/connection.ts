@@ -9,6 +9,7 @@ import { CartItem } from '../models/cartItem.model'
 import { Order } from '../models/order.model'
 import { OrderItem } from '../models/orderItem.model'
 import { ProductCategory } from '../models/productCategory.model'
+import { initializeAssociations } from '../modelRelation'
 
 dotenv.config()
 export const connection = new Sequelize({
@@ -30,6 +31,8 @@ export const connection = new Sequelize({
     ProductCategory
   ]
 })
+
+initializeAssociations()
 
 async function connectionDB (): Promise<void> {
   try {
