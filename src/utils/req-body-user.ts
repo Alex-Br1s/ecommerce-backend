@@ -39,7 +39,8 @@ export const toNewUserEntry = (dataUser: any): NewUserEntry => {
     lastName: parseLastName(dataUser.lastName).toLowerCase(),
     profilePicture: parseProfilePicture(dataUser.profilePicture),
     email: parseEmail(dataUser.email),
-    password: parsePassword(dataUser.password)
+    password: parsePassword(dataUser.password),
+    role: dataUser.role
   }
   return validateData
 }

@@ -1,6 +1,6 @@
 
 import { Request, Response } from 'express'
-import { getAllProducts, getOneProduct, addNewProduct, deleteOneProduct, updateProduct, getAllProductsFilters } from '../services/productsServices'
+import { getAllProducts, getOneProduct, addNewProduct, deleteOneProduct, updateProduct, getAllProductsFilters, getAllProductsStock } from '../services/productsServices'
 import { toNewProductEntry, toUpdateProductEntry } from '../utils/req-body-product'
 
 export const handleGetAllProducts = async (_req: Request, res: Response): Promise<void> => {
@@ -9,6 +9,15 @@ export const handleGetAllProducts = async (_req: Request, res: Response): Promis
     res.status(200).json(products)
   } catch (error) {
     res.status(500).json({ error: (error as Error).message })//* Maneja errores de manera adecuada
+  }
+}
+
+export const handleGetAllProductsStock = async (_req: Request, res: Response): Promise<void> => {
+  try {
+    const products = await getAllProductsStock()
+    res.status(200).json({ products })
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message })
   }
 }
 

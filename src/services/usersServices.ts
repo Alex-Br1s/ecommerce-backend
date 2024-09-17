@@ -22,7 +22,8 @@ export const registerUser = async (dateUser: NewUserEntry): Promise<Omit<UserEnt
       lastName: dateUser.lastName,
       profilePicture: dateUser.profilePicture,
       email: dateUser.email,
-      password: hashedPassword
+      password: hashedPassword,
+      role: dateUser.role
     }
     const newUserResult = await User.create(newUser as CreationAttributes<User>)
 

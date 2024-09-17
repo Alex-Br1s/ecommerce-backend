@@ -37,9 +37,10 @@ const parseDescription = (descriptionFromRequest: any): string | undefined => {
 }
 
 const parseImage = (imageFromRequest: any): string[] => {
-  if (!Array.isArray(imageFromRequest)) {
-    throw new Error('Las imagenes son requeridas y deben ser un array de imagenes')
-  }
+  if (!Array.isArray(imageFromRequest)) throw new Error('Las imagenes son requeridas y deben ser un array de imagenes')
+
+  if (imageFromRequest.length > 3) throw new Error('El producto no puede tener mas de 3 imagenes')
+
   imageFromRequest.forEach((image) => {
     if (!isString(image)) throw new Error('Las imagenes deben ser de tipo texto')
   })

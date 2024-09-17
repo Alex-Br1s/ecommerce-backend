@@ -6,10 +6,26 @@ import { Category } from '../models/category.model'
 
 export const getAllProducts = async (): Promise<ProductEntry[]> => {
   try {
-    const products = await Product.findAll()
+    const products = await Product.findAll(
+      {
+        where: {
+          stock: { [Op.gt]: 0 }// ?Eso es igual a > 0 es decir evalua la condición que el stock deber ser mayor a 0
+        },
+        include: [{ model: Category, attributes: ['categoryName'], through: { attributes: [] } }]
+      }
+    )
     return products
   } catch (error) {
     throw new Error(`Error al obtener los productos ${(error as Error).message}`)
+  }
+}
+
+export const getAllProductsStock = async (): Promise<ProductEntry[] | undefined> => {
+  try {
+    const productsOutOfStock = await Product.findAll({ where: { stock: 0 } })
+    return productsOutOfStock
+  } catch (error) {
+    throw new Error(`Error al obtener los productos sin stock: ${(error as Error).message}`)
   }
 }
 
@@ -52,6 +68,7 @@ export const getOneProduct = async (id: number): Promise<ProductEntry | any> => 
       include: [
         {
           model: Category,
+          attributes: ['categoryName'],
           through: { attributes: [] } // Esto omite los campos intermedios de ProductCategory
         }
       ]
@@ -83,8 +100,9 @@ export const addNewProduct = async (newProductEntry: NewProductEntry): Promise<P
         )
       )
     }
-
-    return newProduct
+    const product = await Product.findOne({ where: { id: newProduct.id }, include: [{ model: Category, attributes: ['categoryName'], through: { attributes: [] } }] })
+    if (!product) throw new Error('No se encontro el nuevo producto')
+    return product
   } catch (error) {
     throw new Error(`Error al crear un nuevo producto ${(error as Error).message}`)
   }
@@ -100,7 +118,7 @@ export const updateProduct = async (id: number, updateProductEntry: Partial<NewP
     await productToUpdate.update(updateProductEntry)
 
     //* Si hay categorías para actualizar
-    if ((updateProductEntry.categoryId != null) && updateProductEntry.categoryId.length > 0) {
+    if (updateProductEntry.categoryId && updateProductEntry.categoryId.length > 0) {
       //* Eliminar las asociaciones existentes
       await ProductCategory.destroy({ where: { productId: id } })
 

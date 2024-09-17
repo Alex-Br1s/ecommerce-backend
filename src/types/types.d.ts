@@ -29,15 +29,20 @@ export interface UserEntry {
   role: string
   isActive: boolean
 }
-
-export type NewUserEntry = Omit<UserEntry, 'id' | 'role' | 'isActive'>
-
-export type updateUserEntry = Omit<UserEntry, 'id' | 'email' | 'password' | 'role' | 'isActive' >
-
 export interface LoginEntry {
   email: string
   password: string
 }
+
+/* export interface AuthenticatedUser {
+  id: number
+  gmail: string
+  role: string
+} */
+
+export type NewUserEntry = Omit<UserEntry, 'id' | 'isActive'>
+
+export type updateUserEntry = Omit<UserEntry, 'id' | 'email' | 'password' | 'role' | 'isActive' >
 
 export type ChangePasswordEntry = LoginEntry & { newPassword: string }
 
