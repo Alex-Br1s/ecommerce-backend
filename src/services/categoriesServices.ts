@@ -62,7 +62,6 @@ export const deleteCategory = async (deleteCategoryId: number, newCategoryId?: n
 
     // * Ahora que los productos han sido reasignados (si era necesario), se puede eliminar la categoría
     await Category.destroy({ where: { id: deleteCategoryId } })
-    console.log(`Categoría con ID ${deleteCategoryId} eliminada exitosamente.`)
     return deleteCategoryId
   } catch (error) {
     throw new Error((error as Error).message)

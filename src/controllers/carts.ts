@@ -3,11 +3,8 @@ import { addCart, clearCart, deleteProduct, getCart } from '../services/cartServ
 
 export const handleGetCart = async (req: Request, res: Response): Promise<void> => {
   try {
-    console.log('handleGetCart ejecutado')
-    console.log(req.user)
     const userId = req.user?.id
     if (!userId) throw new Error('ID del usuario no proporcionado o inválido')
-
     const userCart = await getCart(userId)
     res.status(200).json(userCart)
   } catch (error) {

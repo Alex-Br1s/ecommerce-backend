@@ -56,7 +56,16 @@ export const loginUser = async (dataLogin: LoginEntry): Promise<{ user: Omit<Use
   }
 }
 
-export const getAllUsers = async (): Promise<UserEntry[]> => {
+export const getOneUser = async (userId: number): Promise<UserEntry | null> => {
+  try {
+    const user = await User.findByPk(userId, { attributes: { exclude: ['password'] } })
+    return user
+  } catch (error) {
+    throw new Error(`Error al obtener un usuario ${(error as Error).message}`)
+  }
+}
+
+export const getAllUsers = async (): Promise<UserEntry[] | null> => {
   try {
     const allUsers = await User.findAll({ where: { isActive: true }, attributes: { exclude: ['password'] } })
     return allUsers
@@ -65,12 +74,12 @@ export const getAllUsers = async (): Promise<UserEntry[]> => {
   }
 }
 
-export const getOneUser = async (userId: number): Promise<UserEntry | null> => {
+export const getAllUsersDesactivated = async (): Promise<UserEntry[] | null> => {
   try {
-    const user = await User.findByPk(userId, { attributes: { exclude: ['password'] } })
-    return user
+    const users = await User.findAll({ where: { isActive: false }, attributes: { exclude: ['password'] } })
+    return users
   } catch (error) {
-    throw new Error(`Error al obtener un usuario ${(error as Error).message}`)
+    throw new Error(`Error al obtener los usuarios desactivados: ${(error as Error).message}`)
   }
 }
 
@@ -81,9 +90,6 @@ export const changePassword = async (userId: number, newData: ChangePasswordEntr
 
     const { email, password } = user.get({ plain: true })
     if (email !== newData.email) throw new Error('El correo electronico no coincide')
-
-    console.log(`constraseña actual: ${newData.password}`)
-    console.log(`constraseña actual: ${newData.newPassword}`)
 
     const passwordMatch = await bcrypt.compare(newData.password, password)
 
