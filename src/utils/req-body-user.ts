@@ -4,6 +4,8 @@ const isString = (value: any): boolean => {
   return typeof value === 'string' && value.length > 0
 }
 
+const isNumber = (value: any): value is number => typeof value === 'number'
+
 const parseName = (nameFromRequest: any): string => {
   if (!isString(nameFromRequest)) throw new Error('El nombre es un texto requerido')
   return nameFromRequest
@@ -31,6 +33,16 @@ const parsePassword = (passwordFromRequest: any): string => {
     throw new Error('Asegurese que su contraseña tenga al menos 8 caracteres, incluya al menos una letra mayúscula, una letra minúscula, un número y un carácter especial')
   }
   return passwordFromRequest
+}
+
+const parseFavorites = (favoritesIdsFromRequest: any): number[] => {
+  if (favoritesIdsFromRequest === undefined) return []
+
+  if (!Array.isArray(favoritesIdsFromRequest)) throw new Error('Los ids de los productos en favoritos deber ser un array')
+  favoritesIdsFromRequest.forEach(favoriteId => {
+    if (!isNumber(favoriteId)) throw new Error('El id debe ser un numero')
+  })
+  return favoritesIdsFromRequest
 }
 
 export const toNewUserEntry = (dataUser: any): NewUserEntry => {
@@ -62,7 +74,8 @@ export const toUpdateUserEntry = (dataUser: any): Partial<updateUserEntry> => {
 export const validateLoginData = (dataUser: any): LoginEntry => {
   const validateData: LoginEntry = {
     email: parseEmail(dataUser.email),
-    password: parsePassword(dataUser.password)
+    password: parsePassword(dataUser.password),
+    favorites: dataUser.favorites ? parseFavorites(dataUser.favorites) : []
   }
   return validateData
 }

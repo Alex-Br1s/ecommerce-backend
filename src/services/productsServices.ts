@@ -80,10 +80,12 @@ export const getOneProduct = async (id: number): Promise<ProductEntry | any> => 
   }
 }
 
-export const addNewProduct = async (newProductEntry: NewProductEntry): Promise<ProductEntry> => {
+export const createProduct = async (newProductEntry: NewProductEntry): Promise<ProductEntry> => {
   try {
     const { categoryId, ...productData } = newProductEntry
     // ? categoryId === [2] o mas ids de categorias [2, 4]
+
+    if (newProductEntry.salePrice && newProductEntry.salePrice > newProductEntry.price) throw new Error('El precio de oferta no puede ser mayor al precio base')
 
     const newProduct = await Product.create(productData as CreationAttributes<Product>)
 

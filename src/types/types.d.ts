@@ -3,6 +3,8 @@ export interface ProductEntry {
   id: number
   name: string
   price: number
+  offer: boolean
+  salePrice?: number | null
   stock: number
   description?: string
   images: string[]
@@ -32,6 +34,7 @@ export interface UserEntry {
 export interface LoginEntry {
   email: string
   password: string
+  favorites?: number[]
 }
 
 /* export interface AuthenticatedUser {
@@ -53,4 +56,11 @@ export interface ResponseAddCart {
     quantity: number
     price: number
   }>
+}
+
+export interface OrderEntry {
+
+  productId: number
+  quantity: number
+
 }

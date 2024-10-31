@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { handleGetAllProducts, handleGetAllProductsFilters, handleGetOneProduct, handleAddProduct, handleUpdateProduct, handleDeleteOneProduct, handleGetAllProductsStock } from '../controllers/products'
+import { handleGetAllProducts, handleGetAllProductsFilters, handleGetOneProduct, handleCreateProduct, handleUpdateProduct, handleDeleteOneProduct, handleGetAllProductsStock } from '../controllers/products'
 import { checkAdminRole } from '../middleware/checkAdminRole'
 import { authenticateToken } from '../middleware/authenticateToken'
 
@@ -28,7 +28,7 @@ router.get('/products/stock', authenticateToken, checkAdminRole, (req, res, next
 })
 
 router.post('/product/create', authenticateToken, checkAdminRole, (req, res, next) => {
-  handleAddProduct(req, res).catch(next)
+  handleCreateProduct(req, res).catch(next)
 })
 
 router.put('/product/edit/:id', authenticateToken, checkAdminRole, (req, res, next) => {

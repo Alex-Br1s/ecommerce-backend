@@ -13,7 +13,7 @@ router.post('/user/login', (req, res, next) => {
   handleLoginUser(req, res).catch(next)
 })
 
-router.put('/user/change-password', authenticateToken, (req, res, next) => {
+router.put('/user/change/password', authenticateToken, (req, res, next) => {
   handleChangePassword(req, res).catch(next)
 })
 
@@ -21,16 +21,17 @@ router.get('/user', authenticateToken, (req, res, next) => {
   handleGetOneUser(req, res).catch(next)
 })
 
+router.put('/user/edit', authenticateToken, (req, res, next) => {
+  handleUpdateUser(req, res).catch(next)
+})
+//! RUTAS DE ADMINISTRADOR
+
 router.get('/users', authenticateToken, checkAdminRole, (req, res, next) => {
   handleGetAllUsers(req, res).catch(next)
 })
 
 router.get('/users/desactivated', authenticateToken, checkAdminRole, (req, res, next) => {
   handleGetAllUsersDesactivated(req, res).catch(next)
-})
-
-router.put('/user/edit', authenticateToken, (req, res, next) => {
-  handleUpdateUser(req, res).catch(next)
 })
 
 router.delete('/user/desactive/:id', authenticateToken, checkAdminRole, (req, res, next) => {

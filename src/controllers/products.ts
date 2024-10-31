@@ -1,6 +1,6 @@
 
 import { Request, Response } from 'express'
-import { getAllProducts, getOneProduct, addNewProduct, deleteOneProduct, updateProduct, getAllProductsFilters, getAllProductsStock } from '../services/productsServices'
+import { getAllProducts, getOneProduct, createProduct, deleteOneProduct, updateProduct, getAllProductsFilters, getAllProductsStock } from '../services/productsServices'
 import { toNewProductEntry, toUpdateProductEntry } from '../utils/req-body-product'
 
 export const handleGetAllProducts = async (_req: Request, res: Response): Promise<void> => {
@@ -39,11 +39,11 @@ export const handleGetOneProduct = async (req: Request, res: Response): Promise<
   }
 }
 
-export const handleAddProduct = async (req: Request, res: Response): Promise<void> => {
+export const handleCreateProduct = async (req: Request, res: Response): Promise<void> => {
   try {
     const dataValidated = toNewProductEntry(req.body)
-    const resultNewproduct = await addNewProduct(dataValidated)
-    res.status(201).json(resultNewproduct)
+    const resultNewProduct = await createProduct(dataValidated)
+    res.status(201).json(resultNewProduct)
   } catch (error) {
     //* Aserción de tipo para tratar a error como un objeto Error
     const errorMessage = error as Error

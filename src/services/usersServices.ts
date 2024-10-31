@@ -4,6 +4,7 @@ import { User } from '../models/user.model'
 import { ChangePasswordEntry, LoginEntry, NewUserEntry, updateUserEntry, UserEntry } from '../types/types'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { Favorite } from '../models/favorite.model'
 dotenv.config()
 
 const secretKey = process.env.JWT_SECRET
@@ -48,6 +49,15 @@ export const loginUser = async (dataLogin: LoginEntry): Promise<{ user: Omit<Use
       expiresIn: '1d'
     })
 
+    //* migrar los favoritos del localStorage a la db
+    if (dataLogin.favorites && dataLogin.favorites.length > 0) {
+      const productsFavorites = dataLogin.favorites.map((productId: number) => ({
+        userId: user.id,
+        productId
+      }))
+
+      await Favorite.bulkCreate(productsFavorites as Array<CreationAttributes<Favorite>>)
+    }
     const { password: _, ...userWithoutPassword } = user.get({ plain: true })
 
     return { user: userWithoutPassword, token }

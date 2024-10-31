@@ -6,6 +6,8 @@ import productRouter from './routes/products'
 import categoryRouter from './routes/categories'
 import userRouter from './routes/user'
 import cartRouter from './routes/cart'
+import favoriteRouter from './routes/favorites'
+import orderRouter from './routes/order'
 
 dotenv.config()
 const PORT = process.env.PORT ?? 3001
@@ -24,10 +26,13 @@ app.use((req, _res, next) => {
 void connectionDB()
 
 //* rutas
-app.use('/api', productRouter)
-app.use('/api', categoryRouter)
-app.use('/api', cartRouter)
-app.use('/api', userRouter)
+const api = '/api'
+app.use(api, productRouter)
+app.use(api, categoryRouter)
+app.use(api, cartRouter)
+app.use(api, userRouter)
+app.use(api, favoriteRouter)
+app.use(api, orderRouter)
 
 app.listen(PORT, () => {
   console.log(`server listening on port ${PORT}`)

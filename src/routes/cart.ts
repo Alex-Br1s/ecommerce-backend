@@ -8,11 +8,11 @@ router.get('/user/cart', authenticateToken, (req, res, next) => {
   handleGetCart(req, res).catch(next)
 })
 
-router.post('/user/cart/add-product', authenticateToken, (req, res, next) => {
+router.post('/user/cart/add/product', authenticateToken, (req, res, next) => {
   handleAddCart(req, res).catch(next)
 })
 
-router.delete('/user/cart/delete-product/:id', authenticateToken, (req, res, next) => {
+router.delete('/user/cart/delete/product/:id', authenticateToken, (req, res, next) => {
   handleDeleteProduct(req, res).catch(next)
 })
 

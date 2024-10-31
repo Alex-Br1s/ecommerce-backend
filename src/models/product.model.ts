@@ -29,6 +29,18 @@ export class Product extends Model<Product> {
     price!: number
 
   @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: false
+  })
+    offer!: boolean
+
+  @Column({
+    type: DataType.FLOAT,
+    allowNull: true
+  })
+    salePrice!: number | null
+
+  @Column({
     type: DataType.INTEGER,
     allowNull: false
   })

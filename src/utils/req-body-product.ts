@@ -28,8 +28,6 @@ const parseStock = (stockFromRequest: any): number => {
 }
 
 const parseDescription = (descriptionFromRequest: any): string | undefined => {
-  if (typeof descriptionFromRequest === 'string') return descriptionFromRequest
-
   if (descriptionFromRequest !== undefined && !isString(descriptionFromRequest)) {
     throw new Error('La descripción debe ser de tipo texto')
   }
@@ -62,6 +60,8 @@ export const toNewProductEntry = (dataProduct: any): NewProductEntry => {
   const newEntry: NewProductEntry = {
     name: parseName(dataProduct.name).toLowerCase(),
     price: parsePrice(dataProduct.price),
+    offer: dataProduct.offer,
+    salePrice: parsePrice !== null ? (dataProduct.salePrice) : null,
     stock: parseStock(dataProduct.stock),
     description: parseDescription(dataProduct.description)?.toLowerCase(),
     images: parseImage(dataProduct.images),
@@ -74,6 +74,15 @@ export const toUpdateProductEntry = (dataProduct: any): Partial<NewProductEntry>
   const updatedEntry: Partial<NewProductEntry> = {}
   if (dataProduct.name !== undefined) {
     updatedEntry.name = parseName(dataProduct.name).toLowerCase()
+  }
+  if (dataProduct.price !== undefined) {
+    updatedEntry.price = parsePrice(dataProduct.price)
+  }
+  if (dataProduct.offer !== undefined) {
+    updatedEntry.offer = dataProduct.offer
+  }
+  if (dataProduct.salePrice !== undefined) {
+    updatedEntry.salePrice = parsePrice(dataProduct.salePrice)
   }
   if (dataProduct.price !== undefined) {
     updatedEntry.price = parsePrice(dataProduct.price)
