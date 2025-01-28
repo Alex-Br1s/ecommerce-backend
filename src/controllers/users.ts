@@ -26,7 +26,7 @@ export const handleLoginUser = async (req: Request, res: Response): Promise<void
 export const handleChangePassword = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.user?.id
-    if (!userId) throw new Error('ID del usuario no proporcionado o inválido')
+    if (!userId) throw new Error('ID del usuario no proporcionado o id inválido')
     const dataValidated = validateChangePassword(req.body)
     const passwordChanged = await changePassword(userId, dataValidated)
     res.status(200).json(passwordChanged)
@@ -38,7 +38,7 @@ export const handleChangePassword = async (req: Request, res: Response): Promise
 export const handleGetOneUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.user?.id
-    if (!userId) throw new Error('ID del usuario no proporcionado o inválido')
+    if (!userId) throw new Error('ID del usuario no proporcionado o id inválido')
     const user = await getOneUser(userId)
     res.status(200).json(user)
   } catch (error) {
@@ -49,7 +49,7 @@ export const handleGetOneUser = async (req: Request, res: Response): Promise<voi
 export const handleUpdateUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.user?.id
-    if (!userId) throw new Error('ID del usuario no proporcionado o inválido')
+    if (!userId) throw new Error('ID del usuario no proporcionado o id inválido')
     const dataValidated = toUpdateUserEntry(req.body)
     const updatedUser = await updateUser(+req.params.id, dataValidated)
     res.status(201).json(updatedUser)
