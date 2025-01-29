@@ -34,6 +34,6 @@ export const deleteFavorites = async (userId: number, productId: number): Promis
     const productRemoved = await Favorite.destroy({ where: { userId, productId } })
     return productRemoved ? 'Se elimino el producto de favoritos' : 'No se encontró el producto en los favoritos del usuario'
   } catch (error) {
-    throw new Error(`Error al eliminar un producto de favorito: ${(error as Error).message}`)
+    throw new Error(`Error al eliminar un producto de favoritos: ${(error as Error).message}`)
   }
 }

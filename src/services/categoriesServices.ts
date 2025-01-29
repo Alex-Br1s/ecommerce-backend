@@ -8,7 +8,7 @@ export const getAllCategories = async (): Promise<CategoryEntry[]> => {
     const categories = await Category.findAll()
     return categories
   } catch (error) {
-    throw new Error(`Error al obtener las categorias ${(error as Error).message}`)
+    throw new Error(`Error al obtener las categorias: ${(error as Error).message}`)
   }
 }
 
@@ -17,7 +17,7 @@ export const addCategory = async (categoryEntry: NewCategoryEntry): Promise<Cate
     const newCategory = await Category.create(categoryEntry as CreationAttributes<Category>)
     return newCategory
   } catch (error) {
-    throw new Error(`Error al crear una categoria ${(error as Error).message}`)
+    throw new Error(`Error al crear una categoria: ${(error as Error).message}`)
   }
 }
 
@@ -28,7 +28,7 @@ export const updateCategory = async (id: number, categoryEntry: Partial<NewCateg
     await category?.update(categoryEntry)
     return category
   } catch (error) {
-    throw new Error(`Error al actualizar la categoria ${(error as Error).message}`)
+    throw new Error(`Error al actualizar la categoria: ${(error as Error).message}`)
   }
 }
 
