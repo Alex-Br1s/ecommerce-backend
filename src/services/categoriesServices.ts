@@ -50,7 +50,7 @@ export const deleteCategory = async (deleteCategoryId: number, newCategoryId?: n
 
       const newCategoryExists = await Category.findByPk(newCategoryId)
 
-      if (!newCategoryExists) throw new Error('La nueva categoria proporcionada no existe')
+      if (!newCategoryExists) throw new Error(`La nueva categoria proporcionada con id: ${newCategoryId} no existe`)
 
       // * Reasignar los productos a la nueva categoría
       await ProductCategory.update(
