@@ -16,7 +16,7 @@ export const getAllProducts = async (): Promise<ProductEntry[]> => {
     )
     return products
   } catch (error) {
-    throw new Error(`Error al obtener los productos ${(error as Error).message}`)
+    throw new Error(`Error al obtener los productos: ${(error as Error).message}`)
   }
 }
 
@@ -59,7 +59,7 @@ export const getAllProductsFilters = async (query: any): Promise<Product[]> => {
 
     return products
   } catch (error) {
-    throw new Error(`Error al obtener los productos filtrados y/o ordenados ${(error as Error).message}`)
+    throw new Error(`Error al obtener los productos filtrados y/o ordenados: ${(error as Error).message}`)
   }
 }
 export const getOneProduct = async (id: number): Promise<ProductEntry | any> => {
@@ -76,7 +76,7 @@ export const getOneProduct = async (id: number): Promise<ProductEntry | any> => 
     if (resultProduct == null) throw new Error('El producto no existe')
     return resultProduct
   } catch (error) {
-    throw new Error(`Error al obtener el usuario por id ${(error as Error).message}`)
+    throw new Error(`Error al obtener el usuario por id: ${(error as Error).message}`)
   }
 }
 
@@ -103,10 +103,10 @@ export const createProduct = async (newProductEntry: NewProductEntry): Promise<P
       )
     }
     const product = await Product.findOne({ where: { id: newProduct.id }, include: [{ model: Category, attributes: ['categoryName'], through: { attributes: [] } }] })
-    if (!product) throw new Error('No se encontro el nuevo producto')
+    if (!product) throw new Error('No se encontro el producto nuevo')
     return product
   } catch (error) {
-    throw new Error(`Error al crear un nuevo producto ${(error as Error).message}`)
+    throw new Error(`Error al crear un nuevo producto: ${(error as Error).message}`)
   }
 }
 
