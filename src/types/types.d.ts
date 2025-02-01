@@ -1,3 +1,5 @@
+import { User } from '../models/user.model'
+
 // ? Types de products
 export interface ProductEntry {
   id: number
@@ -63,4 +65,23 @@ export interface OrderEntry {
   productId: number
   quantity: number
 
+}
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: User // 👈 Agregamos la propiedad 'user' al request
+    }
+  }
+}
+
+// src/types/express.d.ts
+declare namespace Express {
+  export interface Request {
+    user?: {
+      id: number
+      email: string
+      role: string
+    }
+  }
 }
