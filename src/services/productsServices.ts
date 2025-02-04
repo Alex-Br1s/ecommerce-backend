@@ -106,7 +106,7 @@ export const createProduct = async (newProductEntry: NewProductEntry): Promise<P
     if (!product) throw new Error('No se encontro el producto nuevo')
     return product
   } catch (error) {
-    throw new Error(`Error al crear un nuevo producto: ${(error as Error).message}`)
+    throw new Error(`Error al crear el nuevo producto: ${(error as Error).message}`)
   }
 }
 
@@ -151,6 +151,6 @@ export const deleteOneProduct = async (id: number): Promise<number> => {
     // ? destroy devuelve 1 === eliminado & 0 === no eliminado x x motivo
     return resultProduct
   } catch (error) {
-    throw new Error(`Error al eliminar un producto ${(error as Error).message}`)
+    throw new Error(`Error al eliminar el producto: ${(error as Error).message}`)
   }
 }
