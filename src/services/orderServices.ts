@@ -41,6 +41,6 @@ export const createOrder = async (userId: number, dataOrder: { items: OrderEntry
     await newOrder.save()
     return newOrder
   } catch (error) {
-    throw new Error(`Error al crear la orden: ${(error as Error).message}`)
+    throw new Error(`Error al crear una orden: ${(error as Error).message}`)
   }
 }
