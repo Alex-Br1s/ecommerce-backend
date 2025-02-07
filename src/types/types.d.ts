@@ -1,4 +1,3 @@
-import { User } from '../models/user.model'
 
 // ? Types de products
 export interface ProductEntry {
@@ -39,6 +38,21 @@ export interface LoginEntry {
   favorites?: number[]
 }
 
+export interface TokenUser {
+  id: number
+  name: string
+  lastName: string
+  profilePicture: string
+  email: string
+  role: string
+}
+
+declare module 'express-serve-static-core' {
+  interface Request {
+    user?: TokenUser
+  }
+}
+
 /* export interface AuthenticatedUser {
   id: number
   gmail: string
@@ -65,23 +79,4 @@ export interface OrderEntry {
   productId: number
   quantity: number
 
-}
-
-declare global {
-  namespace Express {
-    interface Request {
-      user?: User // 👈 Agregamos la propiedad 'user' al request
-    }
-  }
-}
-
-// src/types/express.d.ts
-declare namespace Express {
-  export interface Request {
-    user?: {
-      id: number
-      email: string
-      role: string
-    }
-  }
 }
