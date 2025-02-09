@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { toNewUserEntry, toUpdateUserEntry, validateChangePassword, validateLoginData } from '../utils/req-body-user'
 import { activeUser, changePassword, desactiveUser, getAllUsers, getAllUsersDesactivated, getOneUser, loginUser, registerUser, updateUser } from '../services/usersServices'
 
@@ -13,13 +13,13 @@ export const handleRegisterUser = async (req: Request, res: Response): Promise<v
   }
 }
 
-export const handleLoginUser = async (req: Request, res: Response): Promise<void> => {
+export const handleLoginUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const dataValidated = validateLoginData(req.body)
     const loginResponse = await loginUser(dataValidated)
     res.status(200).json(loginResponse)
   } catch (error) {
-    res.status(500).send((error as Error).message)
+    next(error)
   }
 }
 
@@ -78,11 +78,12 @@ export const handleGetAllUsersDesactivated = async (_req: Request, res: Response
   }
 }
 
-export const handleDesactiveUser = async (req: Request, res: Response): Promise<void> => {
+export const handleDesactiveUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const userDesactive = await desactiveUser(+req.params.id)
     res.status(202).send(userDesactive)
   } catch (error) {
+    next(error)
     res.status(500).send((error as Error).message)
   }
 }

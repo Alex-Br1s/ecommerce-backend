@@ -40,11 +40,17 @@ export const registerUser = async (dateUser: NewUserEntry): Promise<Omit<UserEnt
 export const loginUser = async (dataLogin: LoginEntry): Promise<{ user: Omit<UserEntry, 'password'>, token: string }> => {
   try {
     const user = await User.findOne({ where: { email: dataLogin.email } })
-    if (!user) throw new Error('Correo o contraseña incorrecto')
-
+    if (!user) {
+      const error = new Error('Correo o contraseña incorrecto')
+      error.name = 'AuthError'
+      throw error
+    }
     const passwordMatch = await bcrypt.compare(dataLogin.password, user.password)
-    if (!passwordMatch) throw new Error('Correo o contraseña incorrecto')
-
+    if (!passwordMatch) {
+      const error = new Error('Correo o contraseña incorrecto')
+      error.name = 'AuthError'
+      throw error
+    }
     const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, secretKey, {
       expiresIn: '1d'
     })
@@ -62,7 +68,8 @@ export const loginUser = async (dataLogin: LoginEntry): Promise<{ user: Omit<Use
 
     return { user: userWithoutPassword, token }
   } catch (error) {
-    throw new Error(`Error al querer iniciar sesión ${(error as Error).message}`)
+    (error as Error).name = (error as Error).name || 'AuthError'
+    throw error
   }
 }
 

@@ -10,7 +10,7 @@ router.post('/user/register', (req, res, next) => {
 })
 
 router.post('/user/login', (req, res, next) => {
-  handleLoginUser(req, res).catch(next)
+  handleLoginUser(req, res, next).catch(next)
 })
 
 router.put('/user/change/password', authenticateToken, (req, res, next) => {
@@ -35,7 +35,7 @@ router.get('/users/desactivated', authenticateToken, checkAdminRole, (req, res, 
 })
 
 router.delete('/user/desactive/:id', authenticateToken, checkAdminRole, (req, res, next) => {
-  handleDesactiveUser(req, res).catch(next)
+  handleDesactiveUser(req, res, next).catch(next)
 })
 
 router.patch('/user/active/:id', authenticateToken, checkAdminRole, (req, res, next) => {

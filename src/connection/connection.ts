@@ -12,10 +12,6 @@ import { ProductCategory } from '../models/productCategory.model'
 import { initializeAssociations } from '../modelRelation'
 
 dotenv.config()
-console.log(process.env.DATABASE_HOST)
-console.log(process.env.DATABASE_USERNAME)
-console.log(process.env.DATABASE_PASSWORD)
-console.log(process.env.DATABASE_NAME)
 
 export const connection = new Sequelize({
   dialect: 'postgres',
@@ -41,11 +37,11 @@ initializeAssociations()
 
 async function connectionDB (): Promise<void> {
   try {
-    await connection.authenticate() // Verifica conexión antes de sincronizar
-    console.log('🔥 Conectado a PostgreSQL correctamente')
+    await connection.authenticate()
+    //* console.log('🔥 Conectado a PostgreSQL correctamente')
 
-    await connection.sync({ alter: true }) // Ajusta modelos sin borrar datos
-    console.log('📦 Modelos sincronizados con la base de datos')
+    await connection.sync()
+    //* console.log('📦 Modelos sincronizados con la base de datos')
   } catch (error) {
     console.error('❌ Error al conectar con la base de datos:', error)
   }

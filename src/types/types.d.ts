@@ -21,7 +21,6 @@ export interface CategoryEntry {
 export type NewCategoryEntry = Omit<CategoryEntry, 'id'>
 
 // ? Types de users
-
 export interface UserEntry {
   id: number
   firstName: string
@@ -32,6 +31,7 @@ export interface UserEntry {
   role: string
   isActive: boolean
 }
+
 export interface LoginEntry {
   email: string
   password: string
@@ -53,12 +53,6 @@ declare module 'express-serve-static-core' {
   }
 }
 
-/* export interface AuthenticatedUser {
-  id: number
-  gmail: string
-  role: string
-} */
-
 export type NewUserEntry = Omit<UserEntry, 'id' | 'isActive'>
 
 export type updateUserEntry = Omit<UserEntry, 'id' | 'email' | 'password' | 'role' | 'isActive' >
@@ -75,8 +69,6 @@ export interface ResponseAddCart {
 }
 
 export interface OrderEntry {
-
   productId: number
   quantity: number
-
 }
