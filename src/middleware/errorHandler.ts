@@ -16,8 +16,11 @@ const ERROR_HANDLERS: Record<string, (res: Response, error: Error) => void> = {
   SyntaxError: (res: Response): void => {
     res.status(401).json({ error: 'token invalid' })
   },
-  AuthError: (res: Response): void => {
+  AuthLoginError: (res: Response): void => {
     res.status(401).json({ error: 'Incorrect email or password' })
+  },
+  AuthRegisterError: (res: Response): void => {
+    res.status(401).json({ error: 'El email ya existe' })
   },
 
   defaultError: (res: Response, error: Error): void => {

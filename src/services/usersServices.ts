@@ -14,7 +14,11 @@ if (!secretKey) throw new Error('JWT_SECRET no está definida en las variables d
 export const registerUser = async (dateUser: NewUserEntry): Promise<Omit<UserEntry, 'password'>> => {
   try {
     const userExists = await User.findOne({ where: { email: dateUser.email } })
-    if (userExists) throw new Error('Este correo ya existe, por favor inicie sesion')
+    if (userExists) {
+      const error = new Error('Este correo ya existe, por favor inicie sesion')
+      error.name = 'AuthRegisterError'
+      throw error
+    }
 
     const hashedPassword = await bcrypt.hash(dateUser.password, 10)
 
@@ -33,7 +37,8 @@ export const registerUser = async (dateUser: NewUserEntry): Promise<Omit<UserEnt
 
     return userWithoutPassword
   } catch (error) {
-    throw new Error((error as Error).message)
+    (error as Error).name = (error as Error).message || 'AuthRegisterError'
+    throw error
   }
 }
 
@@ -42,13 +47,13 @@ export const loginUser = async (dataLogin: LoginEntry): Promise<{ user: Omit<Use
     const user = await User.findOne({ where: { email: dataLogin.email } })
     if (!user) {
       const error = new Error('Correo o contraseña incorrecto')
-      error.name = 'AuthError'
+      error.name = 'AuthLoginError'
       throw error
     }
     const passwordMatch = await bcrypt.compare(dataLogin.password, user.password)
     if (!passwordMatch) {
       const error = new Error('Correo o contraseña incorrecto')
-      error.name = 'AuthError'
+      error.name = 'AuthLoginError'
       throw error
     }
     const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, secretKey, {
@@ -68,7 +73,7 @@ export const loginUser = async (dataLogin: LoginEntry): Promise<{ user: Omit<Use
 
     return { user: userWithoutPassword, token }
   } catch (error) {
-    (error as Error).name = (error as Error).name || 'AuthError'
+    (error as Error).name = (error as Error).name || 'AuthLoginError'
     throw error
   }
 }
