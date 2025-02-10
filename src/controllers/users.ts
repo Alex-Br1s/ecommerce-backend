@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { toNewUserEntry, toUpdateUserEntry, validateChangePassword, validateLoginData } from '../utils/req-body-user'
-import { activeUser, changePassword, desactiveUser, getAllUsers, getAllUsersDesactivated, getOneUser, loginUser, registerUser, updateUser } from '../services/usersServices'
+import { activeUser, changePassword, desactiveUser, getAllUsers, getAllUsersDesactivated, getMeUser, loginUser, registerUser, updateUser } from '../services/usersServices'
 
 //! USERS ⬇
 export const handleRegisterUser = async (req: Request, res: Response): Promise<void> => {
@@ -35,14 +35,15 @@ export const handleChangePassword = async (req: Request, res: Response): Promise
   }
 }
 
-export const handleGetOneUser = async (req: Request, res: Response): Promise<void> => {
+export const handleGetMeUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const userId = req.user?.id
+    console.log(userId)
     if (!userId) throw new Error('ID del usuario no proporcionado o id inválido')
-    const user = await getOneUser(userId)
+    const user = await getMeUser(userId)
     res.status(200).json(user)
   } catch (error) {
-    res.status(500).send((error as Error).message)
+    next(error)
   }
 }
 

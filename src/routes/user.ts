@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { handleActiveUser, handleChangePassword, handleDesactiveUser, handleGetAllUsers, handleGetAllUsersDesactivated, handleGetOneUser, handleLoginUser, handleRegisterUser, handleUpdateUser } from '../controllers/users'
+import { handleActiveUser, handleChangePassword, handleDesactiveUser, handleGetAllUsers, handleGetAllUsersDesactivated, handleGetMeUser, handleLoginUser, handleRegisterUser, handleUpdateUser } from '../controllers/users'
 import { authenticateToken } from '../middleware/authenticateToken'
 import { checkAdminRole } from '../middleware/checkAdminRole'
 
@@ -17,8 +17,8 @@ router.put('/user/change/password', authenticateToken, (req, res, next) => {
   handleChangePassword(req, res).catch(next)
 })
 
-router.get('/user', authenticateToken, (req, res, next) => {
-  handleGetOneUser(req, res).catch(next)
+router.get('/user/me', authenticateToken, (req, res, next) => {
+  handleGetMeUser(req, res, next).catch(next)
 })
 
 router.put('/user/edit', authenticateToken, (req, res, next) => {

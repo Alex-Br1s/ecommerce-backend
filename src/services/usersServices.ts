@@ -15,7 +15,7 @@ export const registerUser = async (dateUser: NewUserEntry): Promise<Omit<UserEnt
   try {
     const userExists = await User.findOne({ where: { email: dateUser.email } })
     if (userExists) {
-      const error = new Error('Este correo ya existe, por favor inicie sesion')
+      const error = new Error('Este correo ya existe, por favor inicie sesión')
       error.name = 'AuthRegisterError'
       throw error
     }
@@ -37,7 +37,7 @@ export const registerUser = async (dateUser: NewUserEntry): Promise<Omit<UserEnt
 
     return userWithoutPassword
   } catch (error) {
-    (error as Error).name = (error as Error).message || 'AuthRegisterError'
+    (error as Error).name = `Error al registrarse: ${(error as Error).message}` || 'AuthRegisterError'
     throw error
   }
 }
@@ -78,12 +78,17 @@ export const loginUser = async (dataLogin: LoginEntry): Promise<{ user: Omit<Use
   }
 }
 
-export const getOneUser = async (userId: number): Promise<UserEntry | null> => {
+export const getMeUser = async (userId: number): Promise<UserEntry | null> => {
   try {
     const user = await User.findByPk(userId, { attributes: { exclude: ['password'] } })
+    if (!user) {
+      const error = new Error('No se econtro el usuario con id')
+      error.message = 'UserNotFound'
+      throw error
+    }
     return user
   } catch (error) {
-    throw new Error(`Error al obtener un usuario ${(error as Error).message}`)
+    throw new Error((error as Error).message || 'UserNotFound')
   }
 }
 
